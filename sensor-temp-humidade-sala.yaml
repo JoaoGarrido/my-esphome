@@ -1,0 +1,17 @@
+esphome:
+    name: "sht41-sala"
+    friendly_name: "sensor de temperatura e humidade sala"
+    platformio_options:
+        board_build.flash_mode: dio
+
+packages:
+    - !include
+        file: common/esp32-c6-ftd.yaml
+        vars:
+            openthread_tlv: !secret openthread_tlv
+    - !include
+        file: common/sht41.yaml
+
+ota:
+    - platform: esphome
+      password: !secret ota_password

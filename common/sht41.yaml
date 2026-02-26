@@ -1,0 +1,25 @@
+substitutions:
+    sda_gpio: GPIO21
+    scl_gpio: GPIO22
+
+# Configure SHT41 sensor for temperature and humidity readings
+i2c:
+    sda: ${sda_gpio}
+    scl: ${scl_gpio}
+    scan: true
+
+sensor:
+    - platform: sht4x
+      id: sht41_sensor
+      temperature:
+        name: "Temperature"
+        filters:
+          - median:
+              window_size: 3
+              send_every: 3
+      humidity:
+        name: "Relative Humidity"
+        filters:
+          - median:
+              window_size: 3
+              send_every: 3
