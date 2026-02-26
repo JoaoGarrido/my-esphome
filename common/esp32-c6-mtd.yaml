@@ -1,0 +1,65 @@
+substitutions:
+  openthread_tlv: 0
+
+# General configuration for logging and safe mode
+logger:
+  level: DEBUG # VERBOSE for more detailed logs, DEBUG for general debugging
+  hardware_uart: UART0
+
+# Uncomment the following lines to enable safe mode, which prevents boot-loop detection during Thread commissioning
+# safe_mode:
+#   disabled: true
+
+# ESP32-C6 specific configuration
+esp32:
+  board: esp32-c6-devkitc-1
+  framework:
+    type: esp-idf
+    sdkconfig_options:
+      # --- Disable Wi-Fi ---
+      CONFIG_ESP_WIFI_ENABLED: "n"
+
+      # --- Network layer ---
+      CONFIG_LWIP_IPV6: "y"
+      CONFIG_LWIP_MULTICAST_PING: "y"
+
+      # --- mbedTLS for Thread security ---
+      CONFIG_MBEDTLS_CMAC_C: "y"
+      CONFIG_MBEDTLS_SSL_PROTO_DTLS: "y"
+      CONFIG_MBEDTLS_KEY_EXCHANGE_ECJPAKE: "y"
+      CONFIG_MBEDTLS_ECJPAKE_C: "y"
+
+      # --- OpenThread configuration ---
+      CONFIG_OPENTHREAD_ENABLED: "y"
+      CONFIG_OPENTHREAD_PLATFORM_NVS: "y"
+      CONFIG_OPENTHREAD_RADIO_NATIVE: "y"
+      CONFIG_OPENTHREAD_DNS_CLIENT: "y"
+      CONFIG_OPENTHREAD_SRP_CLIENT: "y"
+
+      # --- OpenThread: Minimal Thread Device (End Device) ---
+      CONFIG_OPENTHREAD_FTD: "n" 
+      CONFIG_OPENTHREAD_BORDER_ROUTER: "n"
+
+      # --- Verbose OT logging for debugging ---
+      CONFIG_OPENTHREAD_LOG_LEVEL_DYNAMIC: "n"
+      CONFIG_OPENTHREAD_LOG_LEVEL_NOTE: "y"
+
+# Enable IPv6 for Thread networking
+network:
+  enable_ipv6: true
+
+openthread:
+  force_dataset: true # Force the use of the provided dataset
+  tlv: ${openthread_tlv}
+  device_type: MTD
+
+text_sensor:
+  - platform: openthread_info
+    network_name:
+      name: "Thread Network Name"
+    ip_address:
+      name: "Thread IP Address"
+    role:
+      name: "Thread Device Role"
+
+api:
