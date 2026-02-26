@@ -1,0 +1,31 @@
+esphome:
+    name: "leds-sala-jantar"
+    friendly_name: "controlador fita led sala de jantar"
+    platformio_options:
+        board_build.flash_mode: dio
+
+packages:
+    - !include
+        file: common/esp32-c6-ftd.yaml
+        vars:
+            openthread_tlv: !secret openthread_tlv
+
+ota:
+    - platform: esphome
+      password: !secret ota_password
+
+output:
+  - platform: ledc
+    pin: GPIO4
+    id: cold_white
+  - platform: ledc
+    pin: GPIO5
+    id: warm_white
+
+light:
+    - platform: cwww
+      name: "cct-led"
+      cold_white: cold_white
+      warm_white: warm_white
+      cold_white_color_temperature: 6000 K
+      warm_white_color_temperature: 3000 K
