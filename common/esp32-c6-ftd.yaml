@@ -61,5 +61,5 @@ text_sensor:
       name: "Thread IP Address"
     role:
       name: "Thread Device Role"
-  
+
 api:
