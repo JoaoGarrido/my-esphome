@@ -1,5 +1,5 @@
 esphome:
-    name: "leds-sala-jantar"
+    name: "controlador-leds-sala"
     friendly_name: "controlador fita led sala de jantar"
     platformio_options:
         board_build.flash_mode: dio
@@ -16,10 +16,18 @@ ota:
 
 output:
   - platform: ledc
-    pin: GPIO4
+    pin:
+      number: GPIO4
+      mode:
+        output: true
+        pulldown: true
     id: cold_white
   - platform: ledc
-    pin: GPIO5
+    pin:
+      number: GPIO5
+      mode:
+        output: true
+        pulldown: true
     id: warm_white
 
 light:
