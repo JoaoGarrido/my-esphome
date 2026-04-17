@@ -1,12 +1,38 @@
+# Library for collecting SHT41 sensor temperature and humidity with:
+# - Compile time config of SDA and SCL pins
+# - Runtime config of temperature offset
+# 
+# Will sample every 60s and sends the median value of the last 3 readings with
+# offset already applied. For each degree of temperature offset, humidity offset
+# will decrease by 5.
+
 substitutions:
     sda_gpio: GPIO21
     scl_gpio: GPIO22
 
-# Configure SHT41 sensor for temperature and humidity readings
+globals:
+  - id: temp_offset
+    type: float
+    restore_value: yes
+    initial_value: '0.0'
+
 i2c:
     sda: ${sda_gpio}
     scl: ${scl_gpio}
     scan: true
+
+number:
+  - platform: template
+    name: "Temperature Offset"
+    id: offset_slider
+    optimistic: true
+    min_value: -10
+    max_value: 10
+    step: 0.1
+    initial_value: 0.0
+    on_value:
+      then:
+        - lambda: 'id(temp_offset) = x;'
 
 sensor:
     - platform: sht4x
@@ -17,9 +43,11 @@ sensor:
           - median:
               window_size: 3
               send_every: 3
+          - lambda: return x + id(temp_offset);
       humidity:
         name: "Relative Humidity"
         filters:
           - median:
               window_size: 3
               send_every: 3
+          - lambda: return x - id(temp_offset) * 5;
